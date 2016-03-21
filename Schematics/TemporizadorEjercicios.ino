@@ -232,4 +232,3 @@ void toggleLedTime(int pin) {
     digitalWrite(ledTime[i], (pin == ledTime[i]));
   }
 }
-
