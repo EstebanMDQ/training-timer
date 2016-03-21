@@ -80,8 +80,10 @@ void loop() {
           toggleLedTime(ledTime[currWorkTime]);
         } else {
           timerOn = !timerOn;
-          if (!timerOn) {
-            working = LOW;
+          if (timerOn) {
+            startWorking(currTime);
+          } else {
+            stopWorking(currTime);
           }
         }
         dumpStatus();
@@ -106,18 +108,12 @@ void loop() {
     
   } else {
     if (timerOn) {
-      if (currTime > nextTimerChange || nextTimerChange == 0) {
+      if (currTime > nextTimerChange) {
         dumpStatus();
         if (working) {
-          toneUp();
-          nextTimerChange = currTime + long(rest[currRest]) * 1000;
-          digitalWrite(ledStatus1, LOW);
-          digitalWrite(ledStatus2, HIGH);
+          stopWorking(currTime);
         } else {
-          toneDown();
-          nextTimerChange = currTime + long(times[currWorkTime]) * 1000;
-          digitalWrite(ledStatus1, HIGH);
-          digitalWrite(ledStatus2, LOW);
+          startWorking(currTime);
         }
         working = !working;
       }
@@ -132,6 +128,22 @@ void loop() {
 //
 //    
 //  }
+}
+
+void startWorking(long currTime) {
+  toneDown();
+  nextTimerChange = currTime + long(times[currWorkTime]) * 1000;
+  digitalWrite(ledStatus1, HIGH);
+  digitalWrite(ledStatus2, LOW);  
+  working = HIGH;
+}
+
+void stopWorking(long currTime) {
+  toneUp();
+  nextTimerChange = currTime + long(rest[currRest]) * 1000;
+  digitalWrite(ledStatus1, LOW);
+  digitalWrite(ledStatus2, HIGH);
+  working = LOW;
 }
 
 void dumpStatus() {
@@ -154,7 +166,7 @@ void dumpStatus() {
 }
 
 void toneUp() {
-  int duration = 250;
+  int duration = 100;
   int rest = duration * 1.3;
   int melody[] = {NOTE_C5, NOTE_E5, NOTE_G5};
   for (int i=0; i < 3; i++) {
@@ -165,7 +177,7 @@ void toneUp() {
 }
 
 void toneDown() {
-  int duration = 250;
+  int duration = 100;
   int rest = duration * 1.3;
   int melody[] = {NOTE_G5, NOTE_E5, NOTE_C5};
   for (int i=0; i < 3; i++) {
