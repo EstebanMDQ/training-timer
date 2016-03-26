@@ -10,8 +10,8 @@
 
 
 // pines led status
-const int ledStatus1 = 3;
-const int ledStatus2 = 4;
+const int ledStatus1 = 2;
+const int ledStatus2 = 3;
 int currLedStatus1 = LOW;
 int currLedStatus2 = LOW;
 long lastStatus1Flash;
@@ -19,13 +19,14 @@ long lastStatus2Flash;
 
 
 // pines led tiempo
-const int ledTime[3] = {5, 6, 7};
+const int ledTime[5] = {5, 6, 7, 8, 9};
+const int ledRest[2] = {10, 12};
 
 // pin buzzer
 const int buzzer = 11;
 
 // button
-const int pinBtn = 10;
+const int pinBtn = 4;
 long lastDebounceTime = 0;  // the last time the output pin was toggled
 long debounceDelay = 50;    // the debounce time; increase if the output flickers
 int lastBtnState;
@@ -34,7 +35,7 @@ long holdBtnTimer = 0;
 long holdBtnLimit = 1000;
 
 // tiempos y pausas
-const int times[3] = {60, 120, 180};
+const int times[5] = {60, 120, 180, 240, 360};
 const int rest[2] = {30, 60};
 //const int times[3] = {6, 12, 18};
 //const int rest[2] = {3, 6};
@@ -75,9 +76,13 @@ void loop() {
       } else {
         if (mode == HIGH) {
           currWorkTime++;
-          if (currWorkTime == 3)
+          if (currWorkTime == 5) {
             currWorkTime = 0;
-          toggleLedTime(ledTime[currWorkTime]);
+            currRest++;
+          }
+          if (currRest == 2) 
+            currRest = 0;
+          toggleLedTime(ledTime[currWorkTime], ledRest[currRest]);
         } else {
           timerOn = !timerOn;
           if (timerOn) {
@@ -198,6 +203,12 @@ void setup() {
   pinMode(ledTime[0], OUTPUT);
   pinMode(ledTime[1], OUTPUT);
   pinMode(ledTime[2], OUTPUT);
+  pinMode(ledTime[3], OUTPUT);
+  pinMode(ledTime[4], OUTPUT);
+
+  // inicializo pines descanzo
+  pinMode(ledRest[0], OUTPUT);
+  pinMode(ledRest[1], OUTPUT);
 
   // inicializo boton
   pinMode(pinBtn, INPUT);
@@ -216,20 +227,23 @@ void setup() {
   digitalWrite(ledStatus1, LOW);
   digitalWrite(ledStatus2, LOW);
 
-  toggleLedTime(ledTime[0]);
-  delay(30); 
-  toggleLedTime(ledTime[1]);
-  delay(30); 
-  toggleLedTime(ledTime[2]);
-  delay(30); 
 
-  toggleLedTime(ledTime[0]);
+  for( int i=0; i<5; i++) {
+    toggleLedTime(ledTime[i], ledRest[i%2]);
+    delay(50); 
+  }
+
+  toggleLedTime(ledTime[0], ledRest[1]);
   toneUp();
 }
 
-void toggleLedTime(int pin) {
-  for (int i=0; i<3; i++) {
-    digitalWrite(ledTime[i], (pin == ledTime[i]));
+void toggleLedTime(int pin1, int pin2) {
+  int i;
+  for (i=0; i<5; i++) {
+    digitalWrite(ledTime[i], (pin1 == ledTime[i]));
+  }
+  for (i=0; i<2; i++) {
+    digitalWrite(ledRest[i], (pin2 == ledRest[i]));
   }
 }
 
