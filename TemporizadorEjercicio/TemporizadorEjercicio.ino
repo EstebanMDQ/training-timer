@@ -8,6 +8,7 @@
 #define NOTE_E5  659
 #define NOTE_G5  784
 
+#define DEBUG 1
 
 // pines led status
 const int ledStatus1 = 2;
@@ -19,7 +20,7 @@ long lastStatus2Flash;
 
 
 // pines led tiempo
-const int ledTime[5] = {5, 6, 7, 8, 9};
+const int ledTime[5] = {6, 7, 8, 9, 5};
 const int ledRest[2] = {10, 12};
 
 // pin buzzer
@@ -63,7 +64,9 @@ void loop() {
     if (btnRead == HIGH && currBtnState == LOW) {
       holdBtnTimer = currTime;
       currBtnState = HIGH;
+    #ifdef DEBUG
       Serial.println("comenzo holdBtnTimer");
+    #endif
     }
     if (btnRead == LOW && currBtnState == HIGH) {
       if (currTime - holdBtnTimer > holdBtnLimit) {
@@ -71,8 +74,10 @@ void loop() {
         if (mode) {
           working = LOW;
         }
+      #ifdef DEBUG
         Serial.print("finalizo holdBtnTimer ");
         Serial.println(currTime - holdBtnTimer);
+      #endif
       } else {
         if (mode == HIGH) {
           currWorkTime++;
@@ -151,6 +156,7 @@ void stopWorking(long currTime) {
 }
 
 void dumpStatus() {
+#ifdef DEBUG
   Serial.println("================");  
   Serial.print("currWorkTime = ");  
   Serial.println(currWorkTime);
@@ -167,34 +173,35 @@ void dumpStatus() {
   Serial.print("currTime = ");
   Serial.println(millis());
   Serial.println("================");  
+#endif
 }
 
 void toneUp() {
-  int duration = 100;
-  int rest = duration * 1.3;
-  int melody[] = {NOTE_C5, NOTE_E5, NOTE_G5};
-  for (int i=0; i < 3; i++) {
-    tone(buzzer, melody[i], duration);
-    delay(rest);
-    noTone(buzzer);
-  }
+  digitalWrite(buzzer, LOW);
+  delay(1000);
+  digitalWrite(buzzer, HIGH);
 }
 
 void toneDown() {
-  int duration = 100;
-  int rest = duration * 1.3;
-  int melody[] = {NOTE_G5, NOTE_E5, NOTE_C5};
-  for (int i=0; i < 3; i++) {
-    tone(buzzer, melody[i], duration);
-    delay(rest);
-    noTone(buzzer);
-  }
+  digitalWrite(buzzer, LOW);
+  delay(500);
+  digitalWrite(buzzer, HIGH);
+  delay(300);
+  digitalWrite(buzzer, LOW);
+  delay(500);
+  digitalWrite(buzzer, HIGH);
 }
 
 
 void setup() {
+#ifdef DEBUG
   Serial.begin(9600);
-  
+#endif
+
+  // inicializo buzzer
+  pinMode(buzzer, OUTPUT);
+  digitalWrite(buzzer, HIGH);
+
   // inicializo leds status
   pinMode(ledStatus1, OUTPUT);
   pinMode(ledStatus2, OUTPUT);
