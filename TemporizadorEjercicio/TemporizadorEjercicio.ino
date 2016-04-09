@@ -4,10 +4,6 @@
  * 
  */
 
-#define NOTE_C5  523
-#define NOTE_E5  659
-#define NOTE_G5  784
-
 #define DEBUG 1
 
 // pines led status
@@ -21,7 +17,7 @@ long lastStatus2Flash;
 
 // pines led tiempo
 const int ledTime[5] = {6, 7, 8, 9, 5};
-const int ledRest[2] = {10, 12};
+const int ledRest[2] = {12, 10};
 
 // pin buzzer
 const int buzzer = 11;
@@ -177,19 +173,19 @@ void dumpStatus() {
 }
 
 void toneUp() {
-  digitalWrite(buzzer, LOW);
-  delay(1000);
   digitalWrite(buzzer, HIGH);
+  delay(1000);
+  digitalWrite(buzzer, LOW);
 }
 
 void toneDown() {
-  digitalWrite(buzzer, LOW);
-  delay(500);
   digitalWrite(buzzer, HIGH);
+  delay(500);
+  digitalWrite(buzzer, LOW);
   delay(300);
-  digitalWrite(buzzer, LOW);
-  delay(500);
   digitalWrite(buzzer, HIGH);
+  delay(500);
+  digitalWrite(buzzer, LOW);
 }
 
 
@@ -200,7 +196,7 @@ void setup() {
 
   // inicializo buzzer
   pinMode(buzzer, OUTPUT);
-  digitalWrite(buzzer, HIGH);
+  digitalWrite(buzzer, LOW);
 
   // inicializo leds status
   pinMode(ledStatus1, OUTPUT);
