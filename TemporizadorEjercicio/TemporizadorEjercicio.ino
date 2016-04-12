@@ -173,19 +173,19 @@ void dumpStatus() {
 }
 
 void toneUp() {
-  digitalWrite(buzzer, HIGH);
-  delay(1000);
   digitalWrite(buzzer, LOW);
+  delay(1000);
+  digitalWrite(buzzer, HIGH);
 }
 
 void toneDown() {
-  digitalWrite(buzzer, HIGH);
-  delay(500);
   digitalWrite(buzzer, LOW);
+  delay(500);
+  digitalWrite(buzzer, HIGH);
   delay(300);
-  digitalWrite(buzzer, HIGH);
-  delay(500);
   digitalWrite(buzzer, LOW);
+  delay(500);
+  digitalWrite(buzzer, HIGH);
 }
 
 
@@ -196,7 +196,7 @@ void setup() {
 
   // inicializo buzzer
   pinMode(buzzer, OUTPUT);
-  digitalWrite(buzzer, LOW);
+//  digitalWrite(buzzer, HIGH);
 
   // inicializo leds status
   pinMode(ledStatus1, OUTPUT);
